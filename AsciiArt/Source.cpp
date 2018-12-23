@@ -42,9 +42,9 @@ string strToAscii(const string str, const string arr[36][MAX_CHAR_HEIGHT]) {
 	queue <string> Q[MAX_CHAR_HEIGHT];
 	for (int i = 0; i < str.length(); i++) {
 		for (int j = 0; j < charHeight; j++) {
-			if (!isalnum(str[i]))
+			if (!isalnum(str[i]) && str[i] != ' ')
 				continue;
-			if (str[i] == ' ') Q[j].push(space());
+			if (str[i] == ' ') Q[j].push(space());	
 			else if (isdigit(str[i])) Q[j].push(arr[(int)str[i] - (int)'0' + 26][j]);
 			else Q[j].push(arr[(int)tolower(str[i]) - (int)'a'][j]);
 		}
