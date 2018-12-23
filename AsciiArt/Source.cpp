@@ -11,8 +11,8 @@ const int MAX_CHAR_HEIGHT = 30;
 const int MAX_CHAR_WIDTH = 30;
 int charHeight;
 int charWidth;
-const int MAX_LETTERS = 7;
-bool readFile(string fileName, string arr[36][MAX_CHAR_HEIGHT]) {
+int CharsPerLine = 20;
+bool readFile(const string fileName, string arr[36][MAX_CHAR_HEIGHT]) {
 	ifstream ifile;
 	string line;
 	ifile.open(fileName);
@@ -38,7 +38,7 @@ string space() {
 }
 
 
-string strToAscii(string str, string arr[36][MAX_CHAR_HEIGHT]) {
+string strToAscii(const string str, const string arr[36][MAX_CHAR_HEIGHT]) {
 	queue <string> Q[MAX_CHAR_HEIGHT];
 	for (int i = 0; i < str.length(); i++) {
 		for (int j = 0; j < charHeight; j++) {
@@ -48,10 +48,10 @@ string strToAscii(string str, string arr[36][MAX_CHAR_HEIGHT]) {
 		}
 	}
 	string ascii = "";
-	int iterations = ceil((double)Q[0].size() / MAX_LETTERS);
+	int iterations = ceil((double)Q[0].size() / CharsPerLine);
 	for (int t = 0; t < iterations; t++) {
 		for (int i = 0; i < charHeight; i++) {
-			for (int j = 0; j < MAX_LETTERS; j++) {
+			for (int j = 0; j < CharsPerLine; j++) {
 				if (Q[i].empty()) break;
 				string s;
 				s = Q[i].front();
@@ -68,8 +68,43 @@ int main() {
 	string letters[36][MAX_CHAR_HEIGHT];
 	string fileName = "Letters.txt";
 	readFile(fileName, letters);
-	string str;
-	getline(cin, str);
-	cout << strToAscii(str, letters);
+	//header
+	cout << strToAscii("ascii art", letters) << "\n===============================================================\n";
+
+	string str, asciiStr;
+	char input = 'n';
+	bool firstTime = true;
+	while (true)
+	{
+		if (tolower(input) == 'p')
+			cout << asciiStr << endl;
+		else if (tolower(input) == 's') {
+			string ofileName;
+			ofstream ofile;
+			cout << "\nPlease enter a file name..\n";
+			cin.ignore();
+			getline(cin, ofileName);
+			ofile.open(ofileName);
+			ofile << asciiStr;
+			ofile.close();
+			cout << "\nFile saved!\n";
+		}
+		else if (tolower(input) == 'q')
+			break;
+		else if (tolower(input) == 'n') {
+			cout << "\nPlease enter some text to create ASCII art..\n";
+			if (!firstTime) 
+				cin.ignore();
+			getline(cin, str);
+			asciiStr = strToAscii(str, letters);
+			cout << "Art created! \n";
+		}
+		else
+			cout << "\nInvalid input!\n";
+
+		firstTime = false;
+		cout << "(P)rint to the console \n(S)ave to a file \n(Q)uit \n(N)ew Ascii art\n";
+		cin >> input;
+	}
 	return 0;
 }
